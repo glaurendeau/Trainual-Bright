@@ -1,0 +1,81 @@
+import React from 'react';
+import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { useState } from 'react';
+import { MessageSquare } from 'lucide-react';
+import { motion } from 'framer-motion';
+
+const Dashboard = () => {
+    const [chatOpen, setChatOpen] = useState(false);
+    const [messages, setMessages] = useState([]);
+    const [message, setMessage] = useState("");
+
+    const sendMessage = () => {
+        if (message.trim()) {
+            setMessages([...messages, { text: message, sender: 'user' }]);
+            setMessage("");
+            setTimeout(() => {
+                setMessages((msgs) => [...msgs, { text: 'Merci pour votre message, je suis ici pour vous aider !', sender: 'bot' }]);
+            }, 1000);
+        }
+    };
+
+    return (
+        <div className="min-h-screen bg-gray-100 p-8">
+            <h1 className="text-3xl font-bold mb-6">Tableau de Bord</h1>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <Card className="p-4 shadow-lg rounded-2xl">
+                    <CardContent>
+                        <h2 className="text-xl font-semibold">Module 1 - Introduction</h2>
+                        <p className="text-gray-600">Apprenez les bases de l'entreprise.</p>
+                        <Button className="mt-4">Commencer</Button>
+                    </CardContent>
+                </Card>
+                <Card className="p-4 shadow-lg rounded-2xl">
+                    <CardContent>
+                        <h2 className="text-xl font-semibold">Module 2 - Processus</h2>
+                        <p className="text-gray-600">Comprenez nos processus internes.</p>
+                        <Button className="mt-4">Commencer</Button>
+                    </CardContent>
+                </Card>
+                <Card className="p-4 shadow-lg rounded-2xl">
+                    <CardContent>
+                        <h2 className="text-xl font-semibold">Module 3 - Outils</h2>
+                        <p className="text-gray-600">Découvrez les outils que nous utilisons.</p>
+                        <Button className="mt-4">Commencer</Button>
+                    </CardContent>
+                </Card>
+            </div>
+            <motion.div 
+                initial={{ opacity: 0 }} 
+                animate={{ opacity: chatOpen ? 1 : 0, y: chatOpen ? 0 : 100 }}
+                className="fixed bottom-4 right-4 bg-white p-4 rounded-2xl shadow-lg w-80 z-50"
+            >
+                <div className="mb-2">
+                    <h3 className="text-lg font-semibold">Chat Support</h3>
+                </div>
+                <div className="overflow-y-auto max-h-48 mb-4">
+                    {messages.map((msg, index) => (
+                        <p key={index} className={`my-1 ${msg.sender === 'user' ? 'text-right text-blue-600' : 'text-left text-gray-700'}`}>{msg.text}</p>
+                    ))}
+                </div>
+                <div className="flex">
+                    <Input 
+                        value={message} 
+                        onChange={(e) => setMessage(e.target.value)} 
+                        placeholder="Posez votre question..." 
+                        className="flex-grow mr-2"
+                    />
+                    <Button onClick={sendMessage}>Envoyer</Button>
+                </div>
+            </motion.div>
+            <Button onClick={() => setChatOpen(!chatOpen)} className="fixed bottom-20 right-4 rounded-full p-3 shadow-lg bg-blue-600 text-white">
+                <MessageSquare size={24} />
+            </Button>
+        </div>
+    );
+};
+
+export default Dashboard;
+  
